@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { TaskContext } from '../contexts/TaskContext';
+import { TaskContext } from '../contexts/taskContext';
 
 const TaskItem = ({ task }) => {
   const { removeTask, editTask } = useContext(TaskContext);
@@ -8,38 +8,63 @@ const TaskItem = ({ task }) => {
   const [novaDescricao, setNovaDescricao] = useState(task.description);
 
   const salvarEdicao = () => {
+    if (!novoTitulo.trim()) {
+      alert('O título não pode ficar vazio!');
+      return;
+    }
     editTask({ ...task, title: novoTitulo, description: novaDescricao });
     setEditando(false);
   };
 
+  const cancelarEdicao = () => {
+    setNovoTitulo(task.title);
+    setNovaDescricao(task.description);
+    setEditando(false);
+  };
+
+  if (editando) {
+    return <TaskItemEditando
+      novoTitulo={novoTitulo}
+      novaDescricao={novaDescricao}
+      setNovoTitulo={setNovoTitulo}
+      setNovaDescricao={setNovaDescricao}
+      onSalvar={salvarEdicao}
+      onCancelar={cancelarEdicao}
+    />;
+  }
+
   return (
     <div style={styles.card}>
-      {editando ? (
-        <div>
-          <input
-            style={styles.input}
-            value={novoTitulo}
-            onChange={(e) => setNovoTitulo(e.target.value)}
-          />
-          <input
-            style={styles.input}
-            value={novaDescricao}
-            onChange={(e) => setNovaDescricao(e.target.value)}
-          />
-          <button style={styles.btnSalvar} onClick={salvarEdicao}>Salvar</button>
-          <button style={styles.btnCancelar} onClick={() => setEditando(false)}>Cancelar</button>
-        </div>
-      ) : (
-        <div>
-          <h3 style={styles.titulo}>{task.title}</h3>
-          <p style={styles.descricao}>{task.description}</p>
-          <button style={styles.btnEditar} onClick={() => setEditando(true)}>Editar</button>
-          <button style={styles.btnExcluir} onClick={() => removeTask(task.id)}>Excluir</button>
-        </div>
-      )}
+      <h3 style={styles.titulo}>{task.title}</h3>
+      <p style={styles.descricao}>{task.description}</p>
+      <div>
+        <button style={styles.btnEditar} onClick={() => setEditando(true)}>Editar</button>
+        <button style={styles.btnExcluir} onClick={() => removeTask(task.id)}>Excluir</button>
+      </div>
     </div>
   );
 };
+
+const TaskItemEditando = ({ novoTitulo, novaDescricao, setNovoTitulo, setNovaDescricao, onSalvar, onCancelar }) => (
+  <div style={styles.card}>
+    <input
+      style={styles.input}
+      value={novoTitulo}
+      onChange={(e) => setNovoTitulo(e.target.value)}
+      placeholder="Título"
+    />
+    <input
+      style={styles.input}
+      value={novaDescricao}
+      onChange={(e) => setNovaDescricao(e.target.value)}
+      placeholder="Descrição"
+    />
+    <div>
+      <button style={styles.btnSalvar} onClick={onSalvar}>Salvar</button>
+      <button style={styles.btnCancelar} onClick={onCancelar}>Cancelar</button>
+    </div>
+  </div>
+);
 
 const styles = {
   card: {
@@ -52,11 +77,13 @@ const styles = {
   titulo: {
     margin: '0 0 4px 0',
     fontSize: '16px',
+    fontFamily: 'Arial, sans-serif',
   },
   descricao: {
     margin: '0 0 10px 0',
     color: '#555',
     fontSize: '14px',
+    fontFamily: 'Arial, sans-serif',
   },
   input: {
     display: 'block',
@@ -65,6 +92,8 @@ const styles = {
     padding: '6px',
     fontSize: '14px',
     boxSizing: 'border-box',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
   },
   btnEditar: {
     marginRight: '8px',
