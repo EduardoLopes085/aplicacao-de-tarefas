@@ -1,0 +1,33 @@
+.nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background-color: #4a90d9;
+    color: white;
+}
+
+.logo{
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.links{
+    display: flex;
+    gap: 16px;
+}
+
+link{
+    color: #dce9f7;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.linkAtivo{
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 2px solid white;
+    padding-bottom: 4px;
+}
